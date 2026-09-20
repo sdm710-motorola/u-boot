@@ -1,0 +1,25 @@
+name: Build U-Boot
+on:
+    push:
+        branches: [main]
+
+jobs:
+    build:
+        name: Build U-Boot
+        runs-on: ubuntu-24.04-arm
+
+        container:
+            image: ghcr.io/sdm710-motorola/build_images:u-boot
+        steps:
+            - uses: laverdet/alpine-arm64@v1
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Configure u-boot
+              run: make qcom_defconfig qcom-phone.config google-pixel.config
+
+            - name: Build u-boot
+              run: make -j${nproc}
+
+            - name: List files
+              run: ls -lh
